@@ -1,0 +1,22 @@
+{
+    "name": "llm-fact-checker",
+    "version": "1.0.0",
+    "private": true,
+    "workspaces": [
+        "frontend",
+        "backend"
+    ],
+    "scripts": {
+        "dev:frontend": "cd frontend && bun run dev",
+        "dev:backend": "cd backend && bun run index.ts",
+        "dev:ml": "cd ml-service && python main.py",
+        "build": "cd frontend && bun run build",
+        "docker:up": "docker-compose up -d",
+        "docker:down": "docker-compose down",
+        "docker:build": "docker-compose build",
+        "install:ml": "cd ml-service && pip install -r requirements.txt"
+    },
+    "devDependencies": {
+        "typescript": "^5.3.3"
+    }
+}
