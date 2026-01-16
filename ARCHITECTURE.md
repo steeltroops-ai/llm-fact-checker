@@ -205,6 +205,17 @@ Response: {"success":true}
 - Pre-computed embeddings
 - Async operations
 
+## Deployment Pipeline
+```mermaid
+graph LR
+    Push[GitHub Push] --> Action[GitHub Action]
+    Action --> HF[Hugging Face Space]
+    HF --> Docker[Docker Build]
+    Docker --> Live[Live Backend API]
+    
+    Front[Frontend Vercel] --> Live
+```
+
 ## Tech Stack
 
 | Layer | Technology |
