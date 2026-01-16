@@ -1,0 +1,35 @@
+name: Sync Backend to Hugging Face Spaces
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'ml-service/**'
+      - '.github/workflows/huggingface-sync.yml'
+
+jobs:
+  sync-to-hub:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          lfs: true
+
+      - name: Push to Hugging Face Space
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          HF_USERNAME: ${{ secrets.HF_USERNAME }}
+          HF_SPACE_NAME: ${{ secrets.HF_SPACE_NAME }} # e.g. "llm-fact-checker"
+        run: |
+          git config --global user.email "github-actions@github.com"
+          git config --global user.name "GitHub Actions"
+          
+          # Create a temporary branch with only the ml-service directory content at the root
+          # This is required because HF Spaces expects Dockerfile at the root
+          git subtree split --prefix ml-service -b hf-sync-branch
+          
+          # Push this new branch to the Hugging Face Space's main branch
+          # potentially overwriting history there (which is fine for a deployment mirror)
+          git push https://$HF_USERNAME:$HF_TOKEN@huggingface.co/spaces/$HF_USERNAME/$HF_SPACE_NAME hf-sync-branch:main --force
